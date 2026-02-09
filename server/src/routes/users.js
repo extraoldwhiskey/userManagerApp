@@ -70,7 +70,7 @@ router.delete("/", async (req, res) => {
     [req.user.email],
   );
   
-  if (parseInt(rows[0].me_exists, 10) === 0) {return res.status(200).json({ redirect: "/login" });}
+  if (!rows || rows.length === 0 || parseInt(rows[0].me_exists, 10) === 0) {return res.status(200).json({ redirect: "/login" });}
 
   res.json({ ok: true });
 });
