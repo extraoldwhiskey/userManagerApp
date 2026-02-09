@@ -26,7 +26,7 @@ export default function Users() {
   }, [])
 
   const loadUsers = async () => {
-    const res = await api.get("http://localhost:3000/users");
+    const res = await api.get("/users");
     setUsers(res.data);
     setSelectedIds([]);
   };
