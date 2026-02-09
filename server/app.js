@@ -9,7 +9,7 @@ import usersRoutes from './src/routes/users.js'
 import auth from './src/middleware/auth.js' 
 
 const app = express()
-app.use(cors())
+app.use(cors({origin: 'https://usermanagerapp-68pj.onrender.com'}))
 app.use(express.json())
 app.use('/auth', authRoutes)
 app.use('/auth/verify', verifyRouter)
