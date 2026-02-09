@@ -1,29 +1,19 @@
-import "dotenv/config";
-import nodemailer from "nodemailer";
+import SibApiV3Sdk from "sib-api-v3-sdk";
 
-export const transporter = nodemailer.createTransport({
-  host: "smtp-relay.sendinblue.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.BREVO_SENDER_EMAIL,
-    pass: process.env.BREVO_API_KEY,
-  },
-});
+const client = SibApiV3Sdk.ApiClient.instance;
+client.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
+
+const api = new SibApiV3Sdk.TransactionalEmailsApi();
 
 export async function sendVerifyEmail(email, token) {
-  const link = `${process.env.FRONTEND_URL}/auth/verify?token=${token}`
-  try {
-    await transporter.sendMail({
-      from: `"My App" <mukhamedjanovjr@gmail.com>`,
-      to: email,
-      subject: "Verify your email",
-      html: `
-        <p>Hi! Click the link below to verify your email:</p>
-        <a href="${link}">${link}</a>
-      `,
-    });
-  } catch (err) {
-    console.error("Error sending verification email:", err);
-  }
+  await api.sendTransacEmail({
+    sender: { email: process.env.BREVO_SENDER_EMAIL },
+    to: [{ email }],
+    subject: "Verify your account",
+    htmlContent: `
+      <a href="${process.env.FRONTEND_URL}/verify?token=${token}">
+        Verify account
+      </a>
+    `,
+  });
 }
