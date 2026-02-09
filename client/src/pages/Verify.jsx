@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import api from "../services/api"; // твой axios с VITE_API_URL
 
 export default function Verify() {
   const [searchParams] = useSearchParams();
@@ -24,31 +25,23 @@ export default function Verify() {
     };
 
     if (!token) {
-      startRedirect(
-        "The token is invalid or has expired. Redirecting to login...",
-        "/login",
-      );
+      startRedirect("The token is invalid or has expired. Redirecting to login...", "/login");
       return;
     }
 
-    fetch(`/auth/verify?token=${token}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.message === "Email verified successfully") {
-          startRedirect("Email verified! Redirecting to users...", "/users");
+    const handleInvalid = () => {
+      startRedirect("The token is invalid or has expired. Redirecting to login...", "/login");
+    };
+
+    api.get(`${import.meta.env.VITE_API_URL}/auth/verify?token=${token}`)
+      .then(res => {
+        if (res.data.message === "Email verified successfully") {
+          startRedirect("Email verified! Redirecting to login...", "/login");
         } else {
-          startRedirect(
-            "The token is invalid or has expired. Redirecting to login...",
-            "/login",
-          );
+          handleInvalid();
         }
       })
-      .catch(() => {
-        startRedirect(
-          "The token is invalid or has expired. Redirecting to login...",
-          "/login",
-        );
-      });
+      .catch(handleInvalid);
   }, []);
 
   return (
