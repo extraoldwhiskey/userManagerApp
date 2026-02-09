@@ -29,8 +29,21 @@ export default function Register() {
         <h4 className="fw-semibold">Sign Up to The App</h4>
       </div>
 
-      {msg && <div className="alert alert-success">{msg}</div>}
-      {error && <div className="alert alert-danger">{error}</div>}
+      {(msg || error) && (
+        <div
+          className={`alert ${msg ? "alert-success" : "alert-danger"} alert-dismissible`}
+        >
+          {msg || error}
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => {
+              setMsg(null);
+              setError(null);
+            }}
+          />
+        </div>
+      )}
 
       <form className="needs-validation" noValidate onSubmit={submit}>
         <div className="mb-3">
