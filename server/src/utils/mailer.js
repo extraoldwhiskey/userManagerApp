@@ -10,11 +10,7 @@ export async function sendVerifyEmail(email, token) {
     sender: { email: process.env.BREVO_SENDER_EMAIL },
     to: [{ email }],
     subject: "Verify your account",
-    htmlContent: `
-      <a href="${process.env.FRONTEND_URL}/verify?token=${token}">
-        Verify account
-      </a>
-    `,
+    htmlContent: `<a href="${process.env.FRONTEND_URL}/verify?token=${token}">Verify account</a>`,
     textContent: `Verify: ${process.env.FRONTEND_URL}/verify?token=${token}`,
     tags: ["verify"],
   });
