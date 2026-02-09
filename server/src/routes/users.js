@@ -61,17 +61,11 @@ router.post("/unblock", async (req, res) => {
 
 router.delete("/", async (req, res) => {
   const { ids, versions } = req.body;
+  const currentUserId = req.user.id;
+  const deletingSelf = ids.includes(currentUserId);
   const result = await pool.query(`DELETE FROM users WHERE id = ANY($1) AND version = ANY($2)`, [ids, versions]);
-  if (result.rowCount !== ids.length) {
-    return res.status(409).json({ message: "Some users were already modified. Please refresh the page." });
-  ;}
-  const { rows } = await pool.query(
-    `SELECT COUNT(*) FILTER (WHERE email=$1) AS me_exists, COUNT(*) AS total FROM users`,
-    [req.user.email],
-  );
-  
-  if (!rows || rows.length === 0 || parseInt(rows[0].me_exists, 10) === 0) {return res.status(200).json({ redirect: "/login" });}
-
+  if (result.rowCount !== ids.length) {return res.status(409).json({ message: "Some users were already modified. Please refresh the page." });}
+  if (deletingSelf) {return res.status(200).json({ redirect: "/login" });}
   res.json({ ok: true });
 });
 
