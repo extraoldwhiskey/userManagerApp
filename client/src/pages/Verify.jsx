@@ -31,7 +31,7 @@ export default function Verify() {
       return;
     }
 
-    fetch(`http://localhost:3000/auth/verify?token=${token}`)
+    fetch(`/auth/verify?token=${token}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.message === "Email verified successfully") {
