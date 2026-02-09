@@ -21,7 +21,7 @@ router.post("/register", async (req, res) => {
 
   try {
     const UUID = crypto.randomUUID();
-    const loginTime = new Date().toLocaleString("ru-RU");
+    const loginTime = new Date().toISOString();
     const hash = await bcrypt.hash(password, 10);
     const { token, tokenHash } = generateVerifyToken();
 
