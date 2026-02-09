@@ -15,5 +15,7 @@ export async function sendVerifyEmail(email, token) {
         Verify account
       </a>
     `,
+    textContent: `Verify: ${process.env.FRONTEND_URL}/verify?token=${token}`,
+    tags: ["verify"],
   });
 }
