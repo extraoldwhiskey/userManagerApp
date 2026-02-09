@@ -12,13 +12,9 @@ export default function AuthLayout({ children }) {
           <div className="p-4 d-flex flex-column flex-sm-row justify-content-between">
             <span className="mb-2 mb-sm-0">
               Don’t have an account?{" "}
-              <a href="/register" className="link-primary">
-                Sign Up
-              </a>
+              <Link to="/register" className="link-primary">Sign Up</Link>
             </span>
-            <a href="/login" className="link-primary">
-              Forgot password?
-            </a>
+            <Link to="/login" className="link-primary">Forgot password?</Link>
           </div>
         </div>
         <div
