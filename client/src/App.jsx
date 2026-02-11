@@ -6,6 +6,7 @@ import Verify from "./pages/Verify";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
+  console.log("ENV CHECK:", import.meta.env.VITE_API_URL);
   return (
     <BrowserRouter>
       <Routes>
