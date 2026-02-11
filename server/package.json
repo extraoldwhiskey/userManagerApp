@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "nodemon --env-file .env app.js",
+    "start": "node app.js",
     "dev": "nodemon --env-file .env app.js"
   },
   "dependencies": {
