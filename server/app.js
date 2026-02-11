@@ -9,7 +9,7 @@ import usersRoutes from './src/routes/users.js'
 import auth from './src/middleware/auth.js' 
 
 const app = express()
-app.use(cors({origin: 'https://my-app-se2k.onrender.com'}))
+app.use(cors({origin: process.env.FRONTEND_URL}))
 app.use(express.json())
 app.use('/auth', authRoutes)
 app.use('/auth/verify', verifyRouter)
