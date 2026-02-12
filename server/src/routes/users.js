@@ -3,6 +3,16 @@ import pool from "../db/index.js";
 
 const router = express.Router();
 
+const validateBulkOperation = (req, res, next) => {
+  const { ids, versions } = req.body;
+  
+  if (!Array.isArray(ids) || !Array.isArray(versions) || ids.length !== versions.length || ids.length === 0) {
+    return res.status(400).json({ message: "Invalid input data" });
+  }
+  
+  next();
+};
+
 router.get("/", async (req, res) => {
   console.log(req);
   try {
@@ -16,10 +26,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/block", async (req, res) => {
-  const { users } = req.body;
-  const ids = users.map(u => u.id);
-  const versions = users.map(u => u.version);
+router.post("/block", validateBulkOperation, async (req, res) => {
+  const { ids, versions } = req.body;
   
   const result = await pool.query(
     `UPDATE users 
@@ -44,7 +52,7 @@ router.post("/block", async (req, res) => {
   res.json({ ok: true });
 });
 
-router.post("/unblock", async (req, res) => {
+router.post("/unblock", validateBulkOperation, async (req, res) => {
   const { ids, versions } = req.body;
   const result = await pool.query(
     `UPDATE users 
@@ -60,7 +68,7 @@ router.post("/unblock", async (req, res) => {
   res.json({ ok: true });
 });
 
-router.delete("/", async (req, res) => {
+router.delete("/", validateBulkOperation, async (req, res) => {
   const { ids, versions } = req.body;
   const currentUserId = req.user.id;
   const deletingSelf = ids.includes(currentUserId);
