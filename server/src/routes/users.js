@@ -39,7 +39,7 @@ router.post("/block", validateBulkOperation, async (req, res) => {
     [ids, versions],
   );
   
-  if (result.rowCount !== users.length) {
+  if (result.rowCount !== ids.length) {
     return res.status(409).json({ 
       message: "Some users were already modified. Please refresh the page." 
     });
