@@ -17,29 +17,30 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/block", async (req, res) => {
-  const { ids, versions } = req.body;
-
+  const { users } = req.body;
+  const ids = users.map(u => u.id);
+  const versions = users.map(u => u.version);
+  
   const result = await pool.query(
     `UPDATE users 
-     SET previous_status = status, 
-     status = 'blocked', 
-     version = version + 1
-     WHERE id = ANY($1) AND status != 'blocked' AND version = ANY($2)`,
+    SET previous_status = status, 
+    status = 'blocked', 
+    version = version + 1
+    WHERE (id, version) IN (SELECT * FROM UNNEST($1::int[], $2::int[]))
+    AND status != 'blocked'`,
     [ids, versions],
   );
   
-  if (result.rowCount !== ids.length) {
-    return res.status(409).json({ message: "Some users were already modified. Please refresh the page." });
+  if (result.rowCount !== users.length) {
+    return res.status(409).json({ 
+      message: "Some users were already modified. Please refresh the page." 
+    });
   }
-
-  const { rows } = await pool.query(
-    `SELECT status FROM users WHERE id = $1`,
-    [req.user.id],
-  );
-
-  if (rows[0].status === 'blocked') {
-    return res.status(200).json({ redirect: "/login" });
-  }
+  
+  const currentUserId = req.user.id;
+  const blockingSelf = ids.includes(currentUserId);
+  if (blockingSelf) {return res.status(200).json({ redirect: "/login" });}
+  
   res.json({ ok: true });
 });
 
